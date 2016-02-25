@@ -1,0 +1,10 @@
+---
+# handlers file for kong
+- name: restart cassandra
+  service: name=cassndra state=restarted
+
+- name: restart kong
+  service: name=kong state=restarted
+
+- name: reload kong
+  service: name=kong state=reloaded

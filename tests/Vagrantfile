@@ -1,0 +1,20 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+
+  config.vm.box = "ubuntu/trusty64"
+
+
+  config.vm.provider :virtualbox do |vb|
+    vb.name = "kong"
+    vb.memory = 2048
+  end
+
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "provision.yml"
+    ansible.sudo = true
+  end
+
+
+end

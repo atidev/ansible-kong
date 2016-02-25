@@ -1,0 +1,16 @@
+# kong -  Open-Source API Management and Microservice Management
+#
+# Secure, Manage & Extend your APIs and Microservices
+
+description         "API Gateway"
+
+start on runlevel [2345]
+stop on runlevel [!2345]
+
+console log
+
+script
+    kong start
+end script
+
+pre-stop exec kong stop

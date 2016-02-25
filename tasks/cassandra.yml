@@ -1,0 +1,42 @@
+---
+- name: Cassandra | Create install dir for java jre
+  file: path={{ kong_cassandra_java_path }} state=directory
+
+- name: Cassandra | Download Oracle Java 8 JRE
+  get_url:
+    url: http://download.oracle.com/otn-pub/java/jdk/8u60-b27/jre-8u60-linux-x64.tar.gz
+    dest: "{{ kong_download_dir }}/jre-linux-x64.tar.gz"
+    validate_certs: no
+    headers: "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie"
+
+- name: Cassandra | Unarchive JRE
+  unarchive:
+    src: "{{ kong_download_dir }}/jre-linux-x64.tar.gz"
+    dest: "{{ kong_cassandra_java_path }}"
+    copy: no
+
+- name: Cassandra | Enable installed java version
+  alternatives:
+    name: java
+    link: /usr/bin/java
+    path: "{{ kong_cassandra_java_path }}/jre1.8.0_60/bin/java"
+
+- name: Cassandra | Add datastax repo key
+  apt_key: url="https://debian.datastax.com/debian/repo_key" state=present
+
+- name: Cassandra | Add datastax repo
+  apt_repository:
+    repo: "deb http://debian.datastax.com/community stable main"
+    state: present
+
+
+- name: Cassandra | install cassandra package
+  apt:
+    name: cassandra={{ kong_cassandra_version }}
+    state: present
+    update_cache: yes
+    cache_valid_time: 86400
+    force: yes
+
+- name: Cassandra | Ensure cassandra is started
+  service: name=cassandra state=started enabled=yes

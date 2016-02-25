@@ -1,0 +1,7 @@
+---
+# tasks file for kong
+
+- include: cassandra.yml
+  when: kong_cassandra_node
+
+- include: kong.yml
