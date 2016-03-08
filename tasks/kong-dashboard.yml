@@ -1,0 +1,30 @@
+---
+- name: Kong dashboard | Ensure virtualenv package installed
+  apt: name=python-virtualenv state=present update_cache=no
+
+- name: Kong dashboard | Prepare virtualenv
+  pip:
+    name: nodeenv
+    state: present
+    virtualenv: "{{kong_dashboard_path}}"
+
+- name: Kong dashboard | Setup nodeenv
+  command: ./bin/nodeenv -p --prebuilt
+  args:
+    chdir: "{{ kong_dashboard_path }}"
+    creates: "{{ kong_dashboard_path }}/bin/npm"
+
+- name: Kong dashboard | Install kong dashboard
+  npm:
+    name: kong-dashboard
+    state: present
+    global: yes
+    executable: "{{ kong_dashboard_path }}/bin/npm"
+  environment:
+    PATH: "{{ kong_dashboard_path }}/bin/:{{ ansible_env.PATH }}"
+
+- name: Kong dashboard | Create upstart config
+  template: src=kong-dashboard.conf.j2 dest=/etc/init/kong-dashboard.conf
+
+- name: Kong dashboard | Ensure kong dashboard started
+  service: name=kong-dashboard state=started enabled=yes

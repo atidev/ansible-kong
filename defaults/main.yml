@@ -5,6 +5,9 @@ ubuntu_flavor: "trusty"
 # Install cassandra node for kong
 kong_cassandra_node: yes
 
+# Install kong dashboard
+kong_dashboard: no
+
 # Cassandra version
 kong_cassandra_version: 2.1.12
 
@@ -17,6 +20,8 @@ kong_source_deb: "https://github.com/Mashape/kong/releases/download/{{ kong_sour
 # where to download kong and java packages
 kong_download_dir: "/opt"
 
+kong_dashboard_path: "/opt/kong-dashboard"
+kong_dashboard_port: 8008
 
 kong_dependencies:
   - netcat

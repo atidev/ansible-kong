@@ -5,3 +5,6 @@
   when: kong_cassandra_node
 
 - include: kong.yml
+
+- include: kong-dashboard.yml
+  when: kong_dashboard

@@ -1,0 +1,11 @@
+# kong dashboard upstart script
+description "Kong Dashboard"
+
+start on runlevel [2345]
+stop on runlevel [06]
+
+env PATH={{ kong_dashboard_path }}/bin
+
+exec {{ kong_dashboard_path }}/bin/kong-dashboard start -p {{ kong_dashboard_port }}
+
+respawn
