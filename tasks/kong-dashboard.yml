@@ -1,6 +1,9 @@
 ---
 - name: Kong dashboard | Ensure virtualenv package installed
-  apt: name=python-virtualenv state=present update_cache=no
+  apt: name="{{ item }}" state=present update_cache=no
+  with_items:
+    - python-virtualenv
+    - git
 
 - name: Kong dashboard | Prepare virtualenv
   pip:
@@ -14,6 +17,13 @@
     chdir: "{{ kong_dashboard_path }}"
     creates: "{{ kong_dashboard_path }}/bin/npm"
 
+- name: Kong dashboard | Grant ownership for kong user
+  file:
+    path: "{{ kong_dashboard_path }}"
+    owner: "{{ kong_user }}"
+    group: "{{ kong_group }}"
+    recurse: yes
+
 - name: Kong dashboard | Install kong dashboard
   npm:
     name: kong-dashboard
@@ -22,6 +32,8 @@
     executable: "{{ kong_dashboard_path }}/bin/npm"
   environment:
     PATH: "{{ kong_dashboard_path }}/bin/:{{ ansible_env.PATH }}"
+  become: yes
+  become_user: "{{ kong_user }}"
 
 - name: Kong dashboard | Create upstart config
   template: src=kong-dashboard.conf.j2 dest=/etc/init/kong-dashboard.conf

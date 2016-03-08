@@ -17,7 +17,7 @@
   group: name={{ kong_group }} state=present
 
 - name: Ensure kong user is present
-  user: name={{ kong_user }} group={{ kong_group }} createhome=no
+  user: name={{ kong_user }} group={{ kong_group }} createhome=yes
 
 - name: Ensure log service directory exists
   file: path="{{ kong_service_log_dir }}" state=directory owner="{{ kong_user }}" group="{{ kong_group }}" mode=0755
